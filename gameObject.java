@@ -1,3 +1,5 @@
+package pa2;
+
 public class gameObject {
 	private char type;
 	private char color;
