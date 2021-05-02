@@ -9,15 +9,32 @@ public class King extends gameObject{
 	
 	int[][] getMove(){
 		
-		int [][]movepos = new int[1][2];
-		int direction;
+		int [][]movewhere = new int[100][2];
 		
-		if(this.getColor()=='b') direction=-1;
-		else direction=1;
+		movewhere[0][0]=this.getX()-1;
+		movewhere[0][1]=this.getY()-1;
 		
-		movepos[0][0]= super.getX();
-		movepos[0][1]=super.getY()+direction;
+		movewhere[1][0]=this.getX();
+		movewhere[1][1]=this.getY()-1;
 		
-		return movepos;
+		movewhere[2][0]=this.getX()+1;
+		movewhere[2][1]=this.getY()-1;
+		
+		movewhere[3][0]=this.getX()-1;
+		movewhere[3][1]=this.getY();
+		
+		movewhere[4][0]=this.getX()+1;
+		movewhere[4][1]=this.getY();
+		
+		movewhere[5][0]=this.getX()-1;
+		movewhere[5][1]=this.getY()+1;
+	
+		movewhere[6][0]=this.getX();
+		movewhere[6][1]=this.getY()+1;
+		
+		movewhere[7][0]=this.getX()+1;
+		movewhere[7][1]=this.getY()+1;
+		
+		return movewhere;
 	}
 }

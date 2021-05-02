@@ -1,13 +1,25 @@
 package pa2;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class Board {
 	
 	gameObject selectOb;
+	
+	char[][] file_src;
+	char[][] file_drc;
+	String[] file_in;
+	int file_in_i=0;
+	
 	char[] selectsq;
 	String in;
+	char finalturn='b';
 	
 	Rook bR1 = new Rook(1, 8, 'R', 'b', ' ');
 	Rook bR2 = new Rook(8, 8, 'R', 'b', ' ');
@@ -66,7 +78,7 @@ public class Board {
 			{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},
 			{{'w','P',' '},{'w','P',' '},{'w','P',' '},{'w','P',' '},{'w','P',' '},{'w','P',' '},{'w','P',' '},{'w','P',' '}},{{'w','R',' '},{'w','N',' '},{'w','B',' '},{'w','Q',' '},{'w','K',' '},{'w','B',' '},{'w','N',' '},{'w','R',' '}}};
 
-	Board(boolean withFile) {
+	Board(boolean withFile) throws IOException {
 		String tmp;
 		
 		tmp="a8";
@@ -151,7 +163,19 @@ public class Board {
 		tmp="h2";
 		Phonmap.put(tmp,wP8);
 		
-		
+		if(withFile) {
+			File f = new File("input.txt");
+			String fileline;
+			BufferedReader bf = new BufferedReader(new FileReader(f));
+			while((fileline=bf.readLine())!=null)	{
+				file_in[file_in_i]=fileline;
+				file_src[file_in_i]=fileline.split(", ")[0].toCharArray();
+				file_src[file_in_i]=fileline.split(", ")[1].toCharArray();
+				file_in_i++;
+			}
+			
+			file_in_i=0;
+		}
 	}
 
 	public boolean isFinish(boolean withFile) {
@@ -177,220 +201,142 @@ public class Board {
 		int direction;
 		int[][] movewhere = new int[100][2];
 		
-		
-		Scanner sc= new Scanner(System.in);
-		
-		System.out.print("Select piece");
-		in = sc.nextLine();
-		
-		selectsq = in.toCharArray();
-		
-		if(Bishopmap.containsKey(in))	{
-			map=Bishopmap;
-			selectOb=(Bishopmap.get(in));
+		if(withFile) {
+			
+			int checkInval=0;
+			
+			while(true) {
+				while(true) {
+					
+					in=file_in[file_in_i].split(", ")[0];
+					selectsq=file_src[file_in_i];
+					
+					System.out.print("Select piece ");
+					System.out.println(selectsq);
+					
+					if(in.equals("F")) System.exit(0);
+					
+					if(Bishopmap.containsKey(in))	{
+						selectOb=(Bishopmap.get(in));
+						movewhere=((Bishop)selectOb).getMove(board);
+						break;
+					}
+					else if(Rookmap.containsKey(in))	{
+						selectOb=(Rookmap.get(in));
+						movewhere=((Rook)selectOb).getMove(board);
+						break;
+					}		
+					else if(Kingmap.containsKey(in))	{
+						movewhere=((King)selectOb).getMove();
+						selectOb=(Kingmap.get(in));
+						break;
+					}		
+					else if(Queenmap.containsKey(in))	{
+						selectOb=(Queenmap.get(in));
+						movewhere=((Queen)selectOb).getMove(board);
+						break;
+					}		
+					else if(Phonmap.containsKey(in))	{
+						selectOb=(Phonmap.get(in));
+						movewhere=((Phon) selectOb).getMove();
+						break;
+					}		
+					else if(Knightmap.containsKey(in))	{
+						selectOb=(Knightmap.get(in));
+						movewhere=((Knight)selectOb).getMove();
+						break;
+					}
+					else {
+						System.out.println("Invalid command. No piece");
+						file_in_i++;
+					}
+				}
+				
+				if(finalturn==selectOb.getColor()) {
+					System.out.println("Invalid command. Not turn.");
+					file_in_i++;
+					continue;
+				}
+				
+				for(int j=0;movewhere[j][0]!='\0';j++) {
+					if(movewhere[j][0]-1>=0 &&8-movewhere[j][1]>=0&&movewhere[j][0]-1<=7&&8-movewhere[j][0]<=7) {
+						if(board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][0]!=selectOb.getColor())
+							checkInval=1;
+							board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][2]='*';
+					}
+				}
+				
+				if(checkInval==1) break;
+				else {
+					System.out.println("Invalid command");
+					file_in_i++;
+				}
+			}
 		}
-		if(Rookmap.containsKey(in))	{
-			System.out.println("lookmap");
-			map=Rookmap;
-			selectOb=(Rookmap.get(in));
-		}		
-		if(Kingmap.containsKey(in))	{
-			map=Kingmap;
-			selectOb=(Kingmap.get(in));
-		}		
-		if(Queenmap.containsKey(in))	{
-			map=Queenmap;
-			selectOb=(Queenmap.get(in));
-		}		
-		if(Phonmap.containsKey(in))	{
-			System.out.println("phonemap");
-			map=Phonmap;
-			selectOb=(Phonmap.get(in));
-		}		
-		if(Knightmap.containsKey(in))	{
-			map=Knightmap;
-			selectOb=(Knightmap.get(in));
-		}
 		
-		
-		if (selectOb.getColor()=='b')	direction = -1;
-		else	direction = 1;
-		
-		
-		switch(selectOb.getType()) {
-		case 'P':
-			movewhere=((Phon) selectOb).getMove();
-			break;
+		else {
+			Scanner sc= new Scanner(System.in);
 			
-		case 'R':
-			movewhere=((Rook)selectOb).getMove(board);
-			break;
-		
-		case 'N':
-			movewhere=((Knight)selectOb).getMove();
-			break;
-			
-			
-		case 'B':
-			
-			i=0;
+			int checkInval=0;
 			
 			while(true) {
-				if(selectsq[1]-i<0) break;
-				if((int)selectsq[0]-i-97<0) break;
+				while(true) {
+					
+					System.out.print("Select piece ");
+					in = sc.nextLine();
+					if(in.equals("F")) System.exit(0);
+					selectsq = in.toCharArray();
+					
+					if(Bishopmap.containsKey(in))	{
+						selectOb=(Bishopmap.get(in));
+						movewhere=((Bishop)selectOb).getMove(board);
+						break;
+					}
+					else if(Rookmap.containsKey(in))	{
+						selectOb=(Rookmap.get(in));
+						movewhere=((Rook)selectOb).getMove(board);
+						break;
+					}		
+					else if(Kingmap.containsKey(in))	{
+						movewhere=((King)selectOb).getMove();
+						selectOb=(Kingmap.get(in));
+						break;
+					}		
+					else if(Queenmap.containsKey(in))	{
+						selectOb=(Queenmap.get(in));
+						movewhere=((Queen)selectOb).getMove(board);
+						break;
+					}		
+					else if(Phonmap.containsKey(in))	{
+						selectOb=(Phonmap.get(in));
+						movewhere=((Phon) selectOb).getMove();
+						break;
+					}		
+					else if(Knightmap.containsKey(in))	{
+						selectOb=(Knightmap.get(in));
+						movewhere=((Knight)selectOb).getMove();
+						break;
+					}
+					else {
+						System.out.println("Invalid command. No piece");
+					}
+				}
 				
-				movewhere[i][0]=(char) ((int)selectsq[0]-i);
-				movewhere[i][1]=(char) ((int)selectsq[1]-i);
+				if(finalturn==selectOb.getColor()) {
+					System.out.println("Invalid command. Not turn.");
+					continue;
+				}
 				
-				if(board[(int)selectsq[1]-i][(int)selectsq[0]-i][0]!=' ') break;
+				for(int j=0;movewhere[j][0]!='\0';j++) {
+					if(movewhere[j][0]-1>=0 &&8-movewhere[j][1]>=0&&movewhere[j][0]-1<=7&&8-movewhere[j][0]<=7) {
+						if(board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][0]!=selectOb.getColor())
+							checkInval=1;
+							board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][2]='*';
+					}
+				}
 				
-				i++;
-			}
-			
-			while(true) {
-				if(selectsq[1]-i<0) break;
-				if((int)selectsq[0]+i-97>8) break;
-				
-				movewhere[i][0]=(char) ((int)selectsq[0]+i);
-				movewhere[i][1]=(char) ((int)selectsq[1]-i);
-				
-				if(board[(int)selectsq[1]-i][(int)selectsq[0]+i][0]!=' ') break;
-				
-				i++;
-			}
-			
-			while(true) {
-				if(selectsq[1]+i>8) break;
-				if((int)selectsq[0]+i-97>8) break;
-				
-				movewhere[i][0]=(char) ((int)selectsq[0]+i);
-				movewhere[i][1]=(char) ((int)selectsq[1]+i);
-				
-				if(board[(int)selectsq[1]+i][(int)selectsq[0]+i][0]!=' ') break;
-				
-				i++;
-			}
-			
-			while(true) {
-				if(selectsq[1]+i>8) break;
-				if((int)selectsq[0]-i-97<0) break;
-				
-				movewhere[i][0]=(char) ((int)selectsq[0]-i);
-				movewhere[i][1]=(char) ((int)selectsq[1]+i);
-				
-				if(board[(int)selectsq[1]+i][(int)selectsq[0]-i][0]!=' ') break;
-				
-				i++;
-			}
-			
-			break;
-			
-		case 'Q':
-			
-			i=0;
-			while(true) {
-				if(selectsq[1]+i>8) break;
-				
-				movewhere[i][0]=selectsq[0];
-				movewhere[i][1]=(char) (selectsq[1]+i);
-				
-				if(board[selectsq[1]+i][selectsq[0]][0]!=' ') break;
-				
-				i++;
-			}
-			
-			while(true) {
-				if(selectsq[1]-i<0) break;
-				
-				movewhere[i][0]=selectsq[0];
-				movewhere[i][1]=(char) (selectsq[1]-i);
-				
-				if(board[selectsq[1]-i][selectsq[0]][0]!=' ') break;
-				
-				i++;
-			}
-			
-			while(true) {
-				if((int)selectsq[0]+i-97>8) break;
-				
-				movewhere[i][0]=(char) ((int)selectsq[0]+i);
-				movewhere[i][1]=selectsq[1];
-				
-				if(board[selectsq[1]][(int)selectsq[0]+i-97][0]!=' ') break;
-				
-				i++;
-			}
-			
-			while(true) {
-				if((int)selectsq[0]-i-97<0) break;
-				
-				movewhere[i][0]=(char) ((int)selectsq[0]-i);
-				movewhere[i][1]=selectsq[1];
-				
-				if(board[selectsq[1]][(int)selectsq[0]-i-97][0]!=' ') break;
-				
-				i++;
-			}
-			
-			while(true) {
-				if(selectsq[1]-i<0) break;
-				if((int)selectsq[0]-i-97<0) break;
-				
-				movewhere[i][0]=(char) ((int)selectsq[0]-i);
-				movewhere[i][1]=(char) ((int)selectsq[1]-i);
-				
-				if(board[(int)selectsq[1]-i][(int)selectsq[0]-i][0]!=' ') break;
-				
-				i++;
-			}
-			
-			while(true) {
-				if(selectsq[1]-i<0) break;
-				if((int)selectsq[0]+i-97>8) break;
-				
-				movewhere[i][0]=(char) ((int)selectsq[0]+i);
-				movewhere[i][1]=(char) ((int)selectsq[1]-i);
-				
-				if(board[(int)selectsq[1]-i][(int)selectsq[0]+i][0]!=' ') break;
-				
-				i++;
-			}
-			
-			while(true) {
-				if(selectsq[1]+i>8) break;
-				if((int)selectsq[0]+i-97>8) break;
-				
-				movewhere[i][0]=(char) ((int)selectsq[0]+i);
-				movewhere[i][1]=(char) ((int)selectsq[1]+i);
-				
-				if(board[(int)selectsq[1]+i][(int)selectsq[0]+i][0]!=' ') break;
-				
-				i++;
-			}
-			
-			while(true) {
-				if(selectsq[1]+i>8) break;
-				if((int)selectsq[0]-i-97<0) break;
-				
-				movewhere[i][0]=(char) ((int)selectsq[0]-i);
-				movewhere[i][1]=(char) ((int)selectsq[1]+i);
-				
-				if(board[(int)selectsq[1]+i][(int)selectsq[0]-i][0]!=' ') break;
-				
-				i++;
-			}
-			
-			break;
-			
-		case 'K':
-			
-			
-			break;	
-		}
-		for(int j=0;movewhere[j][0]!='\0';j++) {
-			if(movewhere[j][0]-1>=0 &&8-movewhere[j][1]>=0&&movewhere[j][0]-1<=7&&8-movewhere[j][0]<=7) {
-				if(board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][0]!=selectOb.getColor())
-					board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][2]='*';
+				if(checkInval==1) break;
+				else System.out.println("Invalid command");
 			}
 		}
 		
@@ -400,54 +346,65 @@ public class Board {
 	
 	public void moveObject(boolean withFile) {
 		
-		Scanner sc = new Scanner(System.in);
-		String movein;
-		char[] movesq;
-		
-		System.out.print("Move piece");
-		String inm=sc.nextLine();
-		movesq = inm.toCharArray();
-		
-		board[8-(selectOb.getY())][selectOb.getX()-1][0]=' ';
-		board[8-(selectOb.getY())][selectOb.getX()-1][1]=' ';
-		board[8-(selectOb.getY())][selectOb.getX()-1][2]=' ';
-		
-		selectOb.setX(movesq[0]-96);
-		selectOb.setY(Integer.parseInt(String.valueOf(movesq[1])));
-		
-		if(Bishopmap.containsValue(selectOb))	{
-			Bishopmap.remove(in);
-			Bishopmap.put(inm,selectOb);
+		if(withFile) {
+			
 		}
-		if(Rookmap.containsValue(selectOb))	{
-			Rookmap.remove(in);
-			Rookmap.put(inm,selectOb);
-		}		
-		if(Kingmap.containsValue(selectOb))	{
-			Kingmap.remove(in);
-			Kingmap.put(inm,selectOb);
-		}		
-		if(Queenmap.containsValue(selectOb))	{
-			Queenmap.remove(in);
-			Queenmap.put(inm,selectOb);
-		}		
-		if(Phonmap.containsValue(selectOb))	{
-			System.out.println("moveq"+inm);
-			Phonmap.remove(in);
-			Phonmap.put(inm,selectOb);
-		}		
-		if(Knightmap.containsValue(selectOb))	{
-			Knightmap.remove(in);
-			Knightmap.put(inm,selectOb);
-		}
-		
-		board[8-(selectOb.getY())][selectOb.getX()-1][0]=selectOb.getColor();
-		board[8-(selectOb.getY())][selectOb.getX()-1][1]=selectOb.getType();
-		board[8-(selectOb.getY())][selectOb.getX()-1][2]=' ';
-		
-		for(int a=0;a<8;a++) {
-			for(int b=0;b<8;b++) {
-				board[a][b][2]=' ';
+		else {
+			Scanner sc = new Scanner(System.in);
+			String movein;
+			char[] movesq;
+			String inm;
+			
+			while(true)	{
+				System.out.print("Move piece ");
+				inm=sc.nextLine();
+				if(inm.equals("F")) System.exit(0);
+				movesq = inm.toCharArray();
+				if(board[8-(selectOb.getY())][selectOb.getX()-1][2]=='*') break;
+				System.out.println("Invalid command");
+			}
+			
+			board[8-(selectOb.getY())][selectOb.getX()-1][0]=' ';
+			board[8-(selectOb.getY())][selectOb.getX()-1][1]=' ';
+			board[8-(selectOb.getY())][selectOb.getX()-1][2]=' ';
+			
+			selectOb.setX(movesq[0]-96);
+			selectOb.setY(Integer.parseInt(String.valueOf(movesq[1])));
+			
+			if(Bishopmap.containsValue(selectOb))	{
+				Bishopmap.remove(in);
+				Bishopmap.put(inm,selectOb);
+			}
+			if(Rookmap.containsValue(selectOb))	{
+				Rookmap.remove(in);
+				Rookmap.put(inm,selectOb);
+			}		
+			if(Kingmap.containsValue(selectOb))	{
+				Kingmap.remove(in);
+				Kingmap.put(inm,selectOb);
+			}		
+			if(Queenmap.containsValue(selectOb))	{
+				Queenmap.remove(in);
+				Queenmap.put(inm,selectOb);
+			}		
+			if(Phonmap.containsValue(selectOb))	{
+				System.out.println("moveq"+inm);
+				Phonmap.remove(in);
+				Phonmap.put(inm,selectOb);
+			}		
+			if(Knightmap.containsValue(selectOb))	{
+				Knightmap.remove(in);
+				Knightmap.put(inm,selectOb);
+			}
+			
+			board[8-(selectOb.getY())][selectOb.getX()-1][0]=selectOb.getColor();
+			board[8-(selectOb.getY())][selectOb.getX()-1][1]=selectOb.getType();
+			board[8-(selectOb.getY())][selectOb.getX()-1][2]=' ';
+			
+			for(int a=0;a<8;a++) {
+				for(int b=0;b<8;b++) {
+					board[a][b][2]=' ';
+				}
 			}
 		}
 		

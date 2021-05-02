@@ -9,7 +9,7 @@ public class Rook extends gameObject{
 	
 	int[][] getMove(char[][][] board2){
 		
-		int [][]movewhere = new int[100][2];
+int [][]movewhere = new int[100][2];
 		
 		int i=0;
 		
