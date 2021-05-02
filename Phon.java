@@ -15,7 +15,6 @@ public class Phon extends gameObject{
 		if(this.getColor()=='b') direction=-1;
 		else direction=1;
 		
-		System.out.println(super.getY());
 		movepos[0][0]= super.getX();
 		movepos[0][1]=super.getY()+direction;
 		

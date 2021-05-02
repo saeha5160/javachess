@@ -3,22 +3,29 @@ package pa2;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
+
 
 public class Board {
 	
 	gameObject selectOb;
 	
 	char[][] file_src;
-	char[][] file_drc;
-	String[] file_in;
+	char[][] file_dst;
+	List<Object> file_in = new ArrayList<Object>();
+
 	int file_in_i=0;
 	
 	char[] selectsq;
 	String in;
+	String inm;
 	char finalturn='b';
 	
 	Rook bR1 = new Rook(1, 8, 'R', 'b', ' ');
@@ -73,6 +80,8 @@ public class Board {
 	HashMap<String,gameObject> Queenmap = new HashMap<>();
 	HashMap<String,gameObject> Kingmap = new HashMap<>();
 	
+
+	FileWriter w = new FileWriter("output.txt");
 	
 	char[][][] board= {{{'b','R',' '},{'b','N',' '},{'b','B',' '},{'b','Q',' '},{'b','K',' '},{'b','B',' '},{'b','N',' '},{'b','R',' '}},{{'b','P',' '},{'b','P',' '},{'b','P',' '},{'b','P',' '},{'b','P',' '},{'b','P',' '},{'b','P',' '},{'b','P',' '}},
 			{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},
@@ -158,7 +167,7 @@ public class Board {
 		Phonmap.put(tmp,wP5);
 		tmp="f2";
 		Phonmap.put(tmp,wP6);
-		tmp="f2";
+		tmp="g2";
 		Phonmap.put(tmp,wP7);
 		tmp="h2";
 		Phonmap.put(tmp,wP8);
@@ -168,13 +177,12 @@ public class Board {
 			String fileline;
 			BufferedReader bf = new BufferedReader(new FileReader(f));
 			while((fileline=bf.readLine())!=null)	{
-				file_in[file_in_i]=fileline;
-				file_src[file_in_i]=fileline.split(", ")[0].toCharArray();
-				file_src[file_in_i]=fileline.split(", ")[1].toCharArray();
+				file_in.add(fileline);
 				file_in_i++;
 			}
 			
 			file_in_i=0;
+			
 		}
 	}
 
@@ -195,7 +203,7 @@ public class Board {
 		}
 	}
 	
-	public void selectObject(boolean withFile) {
+	public void selectObject(boolean withFile) throws IOException {
 		
 		int i;
 		int direction;
@@ -208,8 +216,10 @@ public class Board {
 			while(true) {
 				while(true) {
 					
-					in=file_in[file_in_i].split(", ")[0];
-					selectsq=file_src[file_in_i];
+					if(file_in_i>=file_in.size()) System.exit(0);
+					
+					in=((String) file_in.get(file_in_i)).split(", ")[0];
+					selectsq=in.toCharArray();
 					
 					System.out.print("Select piece ");
 					System.out.println(selectsq);
@@ -259,7 +269,7 @@ public class Board {
 				}
 				
 				for(int j=0;movewhere[j][0]!='\0';j++) {
-					if(movewhere[j][0]-1>=0 &&8-movewhere[j][1]>=0&&movewhere[j][0]-1<=7&&8-movewhere[j][0]<=7) {
+					if((movewhere[j][0]-1)>=0 &&(8-movewhere[j][1])>=0&&(movewhere[j][0]-1)<=7&&(8-movewhere[j][1])<=7) {
 						if(board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][0]!=selectOb.getColor())
 							checkInval=1;
 							board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][2]='*';
@@ -328,7 +338,8 @@ public class Board {
 				}
 				
 				for(int j=0;movewhere[j][0]!='\0';j++) {
-					if(movewhere[j][0]-1>=0 &&8-movewhere[j][1]>=0&&movewhere[j][0]-1<=7&&8-movewhere[j][0]<=7) {
+					
+					if((int)(movewhere[j][0]-1)>=0 &&(int)(8-movewhere[j][1])>=0&&(int)(movewhere[j][0]-1)<=7&&(int)(8-movewhere[j][1])<=7) {
 						if(board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][0]!=selectOb.getColor())
 							checkInval=1;
 							board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][2]='*';
@@ -344,23 +355,83 @@ public class Board {
 		
 	}
 	
-	public void moveObject(boolean withFile) {
+	public void moveObject(boolean withFile) throws IOException {
 		
 		if(withFile) {
 			
+			String movein;
+			char[] movesq;
+			
+			while(true)	{
+				System.out.print("Move piece ");
+				inm=((String) file_in.get(file_in_i)).split(", ")[1];
+				System.out.println(inm);
+				
+				if(inm.equals("F")) System.exit(0);
+				movesq=inm.toCharArray();
+				if(board[8-Integer.parseInt(String.valueOf(movesq[1]))][movesq[0]-96-1][2]=='*') break;
+				System.out.println("Invalid command. Can't move");
+				file_in_i++;
+				selectObject(withFile);
+			}
+			file_in_i++;
+			
+			board[8-(selectOb.getY())][selectOb.getX()-1][0]=' ';
+			board[8-(selectOb.getY())][selectOb.getX()-1][1]=' ';
+			board[8-(selectOb.getY())][selectOb.getX()-1][2]=' ';
+			
+			selectOb.setX(movesq[0]-96);
+			selectOb.setY(Integer.parseInt(String.valueOf(movesq[1])));
+			
+			if(Bishopmap.containsValue(selectOb))	{
+				Bishopmap.remove(in);
+				Bishopmap.put(inm,selectOb);
+			}
+			if(Rookmap.containsValue(selectOb))	{
+				Rookmap.remove(in);
+				Rookmap.put(inm,selectOb);
+			}		
+			if(Kingmap.containsValue(selectOb))	{
+				Kingmap.remove(in);
+				Kingmap.put(inm,selectOb);
+			}		
+			if(Queenmap.containsValue(selectOb))	{
+				Queenmap.remove(in);
+				Queenmap.put(inm,selectOb);
+			}		
+			if(Phonmap.containsValue(selectOb))	{
+				System.out.println("moveq"+inm);
+				Phonmap.remove(in);
+				Phonmap.put(inm,selectOb);
+			}		
+			if(Knightmap.containsValue(selectOb))	{
+				Knightmap.remove(in);
+				Knightmap.put(inm,selectOb);
+			}
+			
+			board[8-(selectOb.getY())][selectOb.getX()-1][0]=selectOb.getColor();
+			board[8-(selectOb.getY())][selectOb.getX()-1][1]=selectOb.getType();
+			board[8-(selectOb.getY())][selectOb.getX()-1][2]=' ';
+			
+			for(int a=0;a<8;a++) {
+				for(int b=0;b<8;b++) {
+					board[a][b][2]=' ';
+				}
+			}
+			
 		}
+		
 		else {
 			Scanner sc = new Scanner(System.in);
 			String movein;
 			char[] movesq;
-			String inm;
 			
 			while(true)	{
 				System.out.print("Move piece ");
 				inm=sc.nextLine();
 				if(inm.equals("F")) System.exit(0);
 				movesq = inm.toCharArray();
-				if(board[8-(selectOb.getY())][selectOb.getX()-1][2]=='*') break;
+				if(board[8-Integer.parseInt(String.valueOf(movesq[1]))][movesq[0]-96-1][2]=='*') break;
 				System.out.println("Invalid command");
 			}
 			
@@ -407,10 +478,12 @@ public class Board {
 				}
 			}
 		}
+		if(selectOb.getColor()=='w') finalturn='w';
+		else finalturn='b';
 		
 	}
 	
-	public void printBoard(boolean withFile) {
+	public void printBoard(boolean withFile) throws IOException {
 		
 		
 		final String ANSI_RESET = "\033[0m";
@@ -419,28 +492,83 @@ public class Board {
 		final String ANSI_BG_BLACK = "\033[40m";
 		final String ANSI_BG_WHITE = "\033[47m";
 	
-		System.out.println("   a  b  c  d  e  f  g  h \n");
-		for(int i = 0; i < 8; i++) {
-			System.out.print(8-i + " ");
-			for (int j = 0; j < 8; j++) {
-				if(isBlackSquare(i, j)) {
-					// Black background, white character
-					
-					System.out.print(ANSI_BG_BLACK + ANSI_FG_WHITE
-							+ board[i][j][0]
-							+ board[i][j][1]
-							+ board[i][j][2]
-							+ ANSI_RESET + ANSI_RESET);
-				} else {
-					/// White background, black character
-					System.out.print(ANSI_BG_WHITE + ANSI_FG_BLACK
-							+ board[i][j][0]
-							+ board[i][j][1]
-							+ board[i][j][2]
-							+ ANSI_RESET + ANSI_RESET);
+		if(withFile)	{
+			
+			w.write("   a  b  c  d  e  f  g  h \n");
+			
+			for(int i = 0; i < 8; i++) {
+				w.write(8-i + " ");
+				for (int j = 0; j < 8; j++) {
+					if(isBlackSquare(i, j)) {
+						// Black background, white character
+						
+						w.write(ANSI_BG_BLACK + ANSI_FG_WHITE
+								+ board[i][j][0]
+								+ board[i][j][1]
+								+ board[i][j][2]
+								+ ANSI_RESET + ANSI_RESET);
+					} else {
+						/// White background, black character
+						w.write(ANSI_BG_WHITE + ANSI_FG_BLACK
+								+ board[i][j][0]
+								+ board[i][j][1]
+								+ board[i][j][2]
+								+ ANSI_RESET + ANSI_RESET);
+					}
 				}
+				w.write('\n');
+				
+				
 			}
-			System.out.print('\n');
+			System.out.println("   a  b  c  d  e  f  g  h \n");
+			for(int i = 0; i < 8; i++) {
+				System.out.print(8-i + " ");
+				for (int j = 0; j < 8; j++) {
+					if(isBlackSquare(i, j)) {
+						// Black background, white character
+						
+						System.out.print(ANSI_BG_BLACK + ANSI_FG_WHITE
+								+ board[i][j][0]
+								+ board[i][j][1]
+								+ board[i][j][2]
+								+ ANSI_RESET + ANSI_RESET);
+					} else {
+						/// White background, black character
+						System.out.print(ANSI_BG_WHITE + ANSI_FG_BLACK
+								+ board[i][j][0]
+								+ board[i][j][1]
+								+ board[i][j][2]
+								+ ANSI_RESET + ANSI_RESET);
+					}
+				}
+				System.out.print('\n');
+			}
+		}
+		
+		else {
+			System.out.println("   a  b  c  d  e  f  g  h \n");
+			for(int i = 0; i < 8; i++) {
+				System.out.print(8-i + " ");
+				for (int j = 0; j < 8; j++) {
+					if(isBlackSquare(i, j)) {
+						// Black background, white character
+						
+						System.out.print(ANSI_BG_BLACK + ANSI_FG_WHITE
+								+ board[i][j][0]
+								+ board[i][j][1]
+								+ board[i][j][2]
+								+ ANSI_RESET + ANSI_RESET);
+					} else {
+						/// White background, black character
+						System.out.print(ANSI_BG_WHITE + ANSI_FG_BLACK
+								+ board[i][j][0]
+								+ board[i][j][1]
+								+ board[i][j][2]
+								+ ANSI_RESET + ANSI_RESET);
+					}
+				}
+				System.out.print('\n');
+			}
 		}
 		
 	}
