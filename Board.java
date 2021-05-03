@@ -190,8 +190,9 @@ public class Board {
 		
 		
 		if(Kingmap.containsValue(bK)&&Kingmap.containsValue(wK)) return false;
+		
 		else {
-			
+			System.out.println("test");
 			if(Kingmap.containsValue(bK)) {
 				System.out.println("black win");
 				return true;
@@ -221,8 +222,8 @@ public class Board {
 					in=((String) file_in.get(file_in_i)).split(", ")[0];
 					selectsq=in.toCharArray();
 					
-					System.out.print("Select piece ");
-					System.out.println(selectsq);
+					w.write("Select piece: ");
+					w.write(in);
 					
 					if(in.equals("F")) System.exit(0);
 					
@@ -257,28 +258,26 @@ public class Board {
 						break;
 					}
 					else {
-						System.out.println("Invalid command. No piece");
 						file_in_i++;
 					}
 				}
 				
 				if(finalturn==selectOb.getColor()) {
-					System.out.println("Invalid command. Not turn.");
 					file_in_i++;
 					continue;
 				}
 				
 				for(int j=0;movewhere[j][0]!='\0';j++) {
 					if((movewhere[j][0]-1)>=0 &&(8-movewhere[j][1])>=0&&(movewhere[j][0]-1)<=7&&(8-movewhere[j][1])<=7) {
-						if(board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][0]!=selectOb.getColor())
+						if(board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][0]!=selectOb.getColor())	{
 							checkInval=1;
 							board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][2]='*';
+						}
 					}
 				}
 				
 				if(checkInval==1) break;
 				else {
-					System.out.println("Invalid command");
 					file_in_i++;
 				}
 			}
@@ -340,9 +339,10 @@ public class Board {
 				for(int j=0;movewhere[j][0]!='\0';j++) {
 					
 					if((int)(movewhere[j][0]-1)>=0 &&(int)(8-movewhere[j][1])>=0&&(int)(movewhere[j][0]-1)<=7&&(int)(8-movewhere[j][1])<=7) {
-						if(board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][0]!=selectOb.getColor())
+						if(board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][0]!=selectOb.getColor()) {
 							checkInval=1;
 							board[8-((int)movewhere[j][1])][(int)movewhere[j][0]-1][2]='*';
+						}
 					}
 				}
 				
@@ -364,15 +364,24 @@ public class Board {
 			
 			while(true)	{
 				System.out.print("Move piece ");
+				w.write("Move piece: ");
 				inm=((String) file_in.get(file_in_i)).split(", ")[1];
 				System.out.println(inm);
+				w.write(inm+"\n");
 				
 				if(inm.equals("F")) System.exit(0);
 				movesq=inm.toCharArray();
 				if(board[8-Integer.parseInt(String.valueOf(movesq[1]))][movesq[0]-96-1][2]=='*') break;
 				System.out.println("Invalid command. Can't move");
 				file_in_i++;
-				selectObject(withFile);
+				
+				while(true) {
+					if(in.equals(((String) file_in.get(file_in_i)).split(", ")[0])) break;
+					System.out.print("Move piece ");
+					System.out.println(((String) file_in.get(file_in_i)).split(", ")[1]);
+					
+					file_in_i++;
+				}
 			}
 			file_in_i++;
 			
@@ -384,27 +393,64 @@ public class Board {
 			selectOb.setY(Integer.parseInt(String.valueOf(movesq[1])));
 			
 			if(Bishopmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
+				
 				Bishopmap.remove(in);
 				Bishopmap.put(inm,selectOb);
 			}
 			if(Rookmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Rookmap.remove(in);
 				Rookmap.put(inm,selectOb);
 			}		
 			if(Kingmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Kingmap.remove(in);
 				Kingmap.put(inm,selectOb);
 			}		
 			if(Queenmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Queenmap.remove(in);
 				Queenmap.put(inm,selectOb);
 			}		
 			if(Phonmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				System.out.println("moveq"+inm);
 				Phonmap.remove(in);
 				Phonmap.put(inm,selectOb);
 			}		
 			if(Knightmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Knightmap.remove(in);
 				Knightmap.put(inm,selectOb);
 			}
@@ -443,27 +489,62 @@ public class Board {
 			selectOb.setY(Integer.parseInt(String.valueOf(movesq[1])));
 			
 			if(Bishopmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Bishopmap.remove(in);
 				Bishopmap.put(inm,selectOb);
 			}
 			if(Rookmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Rookmap.remove(in);
 				Rookmap.put(inm,selectOb);
 			}		
 			if(Kingmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Kingmap.remove(in);
 				Kingmap.put(inm,selectOb);
 			}		
 			if(Queenmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Queenmap.remove(in);
 				Queenmap.put(inm,selectOb);
 			}		
 			if(Phonmap.containsValue(selectOb))	{
-				System.out.println("moveq"+inm);
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Phonmap.remove(in);
 				Phonmap.put(inm,selectOb);
 			}		
 			if(Knightmap.containsValue(selectOb))	{
+				Bishopmap.remove(inm);
+				Rookmap.remove(inm);
+				Kingmap.remove(inm);
+				Queenmap.remove(inm);
+				Phonmap.remove(inm);
+				Knightmap.remove(inm);
 				Knightmap.remove(in);
 				Knightmap.put(inm,selectOb);
 			}
@@ -491,7 +572,7 @@ public class Board {
 		final String ANSI_FG_WHITE = "\033[37m";
 		final String ANSI_BG_BLACK = "\033[40m";
 		final String ANSI_BG_WHITE = "\033[47m";
-	
+		
 		if(withFile)	{
 			
 			w.write("   a  b  c  d  e  f  g  h \n");

@@ -20,7 +20,11 @@ int [][]movewhere = new int[100][2];
 			movewhere[i][0]=this.getX();
 			movewhere[i][1]=this.getY()+bi;
 			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;			
+			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {	
+				i++;
+				break;	
+			}
+			
 			i++;
 			bi--;
 			
@@ -33,7 +37,10 @@ int [][]movewhere = new int[100][2];
 			movewhere[i][0]=this.getX();
 			movewhere[i][1]=this.getY()+ui;
 			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
+			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+				i++;
+				break;
+			}
 			
 			i++;
 			ui++;
@@ -43,11 +50,14 @@ int [][]movewhere = new int[100][2];
 		//¿ÞÂÊ
 		int li=-1;
 		while(true) {
-			if(this.getY()+li<1) break;
-			movewhere[i][0]=this.getX();
-			movewhere[i][1]=this.getY()+li;
+			if(this.getX()+li<1) break;
+			movewhere[i][0]=this.getX()+li;
+			movewhere[i][1]=this.getY();
 			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
+			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+				i++;
+				break;
+			}
 			
 			i++;
 			li--;
@@ -57,11 +67,14 @@ int [][]movewhere = new int[100][2];
 		//¿À¸¥ÂÊ
 		int ri=1;
 		while(true) {
-			if(this.getY()+ri>8) break;
-			movewhere[i][0]=this.getX();
-			movewhere[i][1]=this.getY()+ri;
+			if(this.getX()+ri>8) break;
+			movewhere[i][0]=this.getX()+ri;
+			movewhere[i][1]=this.getY();
 			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
+			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+				i++;
+				break;
+			}
 			
 			i++;
 			ri++;

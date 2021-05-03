@@ -14,14 +14,17 @@ public class Bishop extends gameObject {
 				int i=0;
 				
 				//¿ÞÂÊÀ§
-				int lu=+1;
+				int lu=-1;
 				while(true) {
 					
-					if(this.getY()+lu>8||this.getX()-lu<1) break;
-					movewhere[i][0]=this.getX()-lu;
-					movewhere[i][1]=this.getY()+lu;
+					if(this.getY()-lu>8||this.getX()+lu<1) break;
+					movewhere[i][0]=this.getX()+lu;
+					movewhere[i][1]=this.getY()-lu;
 					
-					if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;			
+					if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+						i++;
+						break;			
+					}
 					i++;
 					lu--;
 					
@@ -34,7 +37,10 @@ public class Bishop extends gameObject {
 					movewhere[i][0]=this.getX()+ru;
 					movewhere[i][1]=this.getY()+ru;
 					
-					if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
+					if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+						i++;
+						break;			
+					}
 					
 					i++;
 					ru++;
@@ -48,7 +54,10 @@ public class Bishop extends gameObject {
 					movewhere[i][0]=this.getX()+ld;
 					movewhere[i][1]=this.getY()+ld;
 					
-					if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
+					if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+						i++;
+						break;			
+					}
 					
 					i++;
 					ld--;
@@ -62,10 +71,13 @@ public class Bishop extends gameObject {
 					movewhere[i][0]=this.getX()-rd;
 					movewhere[i][1]=this.getY()+rd;
 					
-					if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
+					if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+						i++;
+						break;			
+					}
 					
 					i++;
-					rd++;
+					rd--;
 					
 				}
 				return movewhere;

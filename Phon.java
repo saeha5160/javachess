@@ -18,6 +18,12 @@ public class Phon extends gameObject{
 		movepos[0][0]= super.getX();
 		movepos[0][1]=super.getY()+direction;
 		
+		movepos[1][0]=super.getX()-1;
+		movepos[1][1]=super.getY()+direction;
+		
+		movepos[2][0]=super.getX()+1;
+		movepos[2][1]=super.getY()+direction;
+		
 		return movepos;
 	}
 

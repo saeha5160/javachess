@@ -35,6 +35,10 @@ public class King extends gameObject{
 		movewhere[7][0]=this.getX()+1;
 		movewhere[7][1]=this.getY()+1;
 		
+		for(int i=0;i<8;i++) {
+			if(movewhere[i][0]=='\0') movewhere[i][0]=-1;
+		}
+		
 		return movewhere;
 	}
 }

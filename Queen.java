@@ -11,70 +11,90 @@ public class Queen extends gameObject{
 		
 		int [][]movewhere = new int[100][2];
 		int i=0;
-		
 		//아래로
-		int bi=-1;
-		while(true) {
-			if(this.getY()+bi<1) break;
-			movewhere[i][0]=this.getX();
-			movewhere[i][1]=this.getY()+bi;
-			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;			
+		int bi = -1;
+		while (true) {
+			if (this.getY() + bi < 1)
+				break;
+			movewhere[i][0] = this.getX();
+			movewhere[i][1] = this.getY() + bi;
+
+			if (board2[8 - movewhere[i][1]][movewhere[i][0] - 1][0] != ' ') {
+				i++;
+				break;
+			}
+
 			i++;
 			bi--;
-			
+
 		}
-		
-		//위로
-		int ui=1;
-		while(true) {
-			if(this.getY()+ui>8) break;
-			movewhere[i][0]=this.getX();
-			movewhere[i][1]=this.getY()+ui;
-			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
-			
+
+		// 위로
+		int ui = 1;
+		while (true) {
+			if (this.getY() + ui > 8)
+				break;
+			movewhere[i][0] = this.getX();
+			movewhere[i][1] = this.getY() + ui;
+
+			if (board2[8 - movewhere[i][1]][movewhere[i][0] - 1][0] != ' ') {
+				i++;
+				break;
+			}
+
 			i++;
 			ui++;
-			
+
 		}
-		
-		//왼쪽
-		int li=-1;
-		while(true) {
-			if(this.getY()+li<1) break;
-			movewhere[i][0]=this.getX();
-			movewhere[i][1]=this.getY()+li;
-			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
-			
+
+		// 왼쪽
+		int li = -1;
+		while (true) {
+			if (this.getX() + li < 1)
+				break;
+			movewhere[i][0] = this.getX() + li;
+			movewhere[i][1] = this.getY();
+
+			if (board2[8 - movewhere[i][1]][movewhere[i][0] - 1][0] != ' ') {
+				i++;
+				break;
+			}
+
 			i++;
 			li--;
-			
+
 		}
-		
-		//오른쪽
-		int ri=1;
-		while(true) {
-			if(this.getY()+ri>8) break;
-			movewhere[i][0]=this.getX();
-			movewhere[i][1]=this.getY()+ri;
-			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
-			
+
+		// 오른쪽
+		int ri = 1;
+		while (true) {
+			if (this.getX() + ri > 8)
+				break;
+			movewhere[i][0] = this.getX() + ri;
+			movewhere[i][1] = this.getY();
+
+			if (board2[8 - movewhere[i][1]][movewhere[i][0] - 1][0] != ' ') {
+				i++;
+				break;
+			}
+
 			i++;
 			ri++;
-			
+
 		}
+		
 		//왼쪽위
-		int lu=+1;
+		int lu=-1;
 		while(true) {
 			
-			if(this.getY()+lu>8||this.getX()-lu<1) break;
-			movewhere[i][0]=this.getX()-lu;
-			movewhere[i][1]=this.getY()+lu;
+			if(this.getY()-lu>8||this.getX()+lu<1) break;
+			movewhere[i][0]=this.getX()+lu;
+			movewhere[i][1]=this.getY()-lu;
 			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;			
+			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+				i++;
+				break;			
+			}
 			i++;
 			lu--;
 			
@@ -87,7 +107,10 @@ public class Queen extends gameObject{
 			movewhere[i][0]=this.getX()+ru;
 			movewhere[i][1]=this.getY()+ru;
 			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
+			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+				i++;
+				break;			
+			}
 			
 			i++;
 			ru++;
@@ -101,7 +124,10 @@ public class Queen extends gameObject{
 			movewhere[i][0]=this.getX()+ld;
 			movewhere[i][1]=this.getY()+ld;
 			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
+			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+				i++;
+				break;			
+			}
 			
 			i++;
 			ld--;
@@ -115,10 +141,13 @@ public class Queen extends gameObject{
 			movewhere[i][0]=this.getX()-rd;
 			movewhere[i][1]=this.getY()+rd;
 			
-			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') break;
+			if(board2[8-movewhere[i][1]][movewhere[i][0]-1][0]!=' ') {
+				i++;
+				break;			
+			}
 			
 			i++;
-			rd++;
+			rd--;
 			
 		}
 		return movewhere;
