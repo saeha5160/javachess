@@ -186,20 +186,37 @@ public class Board {
 		}
 	}
 
-	public boolean isFinish(boolean withFile) {
+	public boolean isFinish(boolean withFile) throws IOException {
 		
-		
-		if(Kingmap.containsValue(bK)&&Kingmap.containsValue(wK)) return false;
+		if(withFile) {
+			if(Kingmap.containsValue(bK)&&Kingmap.containsValue(wK)) return false;
+			
+			else {
+				if(Kingmap.containsValue(bK)) {
+					w.write("Black Win");
+					w.close();
+					return true;
+				}
+				else {
+					w.write("White Win");
+					w.close();
+					return true;
+				}
+			}
+		}
 		
 		else {
-			System.out.println("test");
-			if(Kingmap.containsValue(bK)) {
-				System.out.println("black win");
-				return true;
-			}
+			if(Kingmap.containsValue(bK)&&Kingmap.containsValue(wK)) return false;
+			
 			else {
-				System.out.println("white win");
-				return true;
+				if(Kingmap.containsValue(bK)) {
+					System.out.println("Black Win");
+					return true;
+				}
+				else {
+					System.out.println("White Win");
+					return true;
+				}
 			}
 		}
 	}
@@ -217,15 +234,22 @@ public class Board {
 			while(true) {
 				while(true) {
 					
-					if(file_in_i>=file_in.size()) System.exit(0);
+					if(file_in_i>=file_in.size()) {
+						w.close();
+						System.exit(0);
+					}
 					
 					in=((String) file_in.get(file_in_i)).split(", ")[0];
 					selectsq=in.toCharArray();
-					
+					System.out.print("select piece: ");
+					System.out.println(in);
 					w.write("Select piece: ");
-					w.write(in);
+					w.write(in+"\n");
 					
-					if(in.equals("F")) System.exit(0);
+					if(in.equals("F")) {
+						w.close();
+						System.exit(0);
+					}
 					
 					if(Bishopmap.containsKey(in))	{
 						selectOb=(Bishopmap.get(in));
@@ -238,8 +262,8 @@ public class Board {
 						break;
 					}		
 					else if(Kingmap.containsKey(in))	{
-						movewhere=((King)selectOb).getMove();
 						selectOb=(Kingmap.get(in));
+						movewhere=((King)selectOb).getMove();
 						break;
 					}		
 					else if(Queenmap.containsKey(in))	{
@@ -291,7 +315,7 @@ public class Board {
 			while(true) {
 				while(true) {
 					
-					System.out.print("Select piece ");
+					System.out.print("Select piece: ");
 					in = sc.nextLine();
 					if(in.equals("F")) System.exit(0);
 					selectsq = in.toCharArray();
@@ -307,8 +331,8 @@ public class Board {
 						break;
 					}		
 					else if(Kingmap.containsKey(in))	{
-						movewhere=((King)selectOb).getMove();
 						selectOb=(Kingmap.get(in));
+						movewhere=((King)selectOb).getMove();
 						break;
 					}		
 					else if(Queenmap.containsKey(in))	{
@@ -363,25 +387,23 @@ public class Board {
 			char[] movesq;
 			
 			while(true)	{
-				System.out.print("Move piece ");
-				w.write("Move piece: ");
-				inm=((String) file_in.get(file_in_i)).split(", ")[1];
-				System.out.println(inm);
-				w.write(inm+"\n");
+				
+				while(true) {
+					System.out.print("move piece: ");
+					w.write("Move piece: ");
+					inm=((String) file_in.get(file_in_i)).split(", ")[1];
+					w.write(inm+"\n");
+					System.out.println(inm);
+					if(in.equals(((String) file_in.get(file_in_i)).split(", ")[0])) break;
+					file_in_i++;
+				}
 				
 				if(inm.equals("F")) System.exit(0);
 				movesq=inm.toCharArray();
 				if(board[8-Integer.parseInt(String.valueOf(movesq[1]))][movesq[0]-96-1][2]=='*') break;
-				System.out.println("Invalid command. Can't move");
 				file_in_i++;
 				
-				while(true) {
-					if(in.equals(((String) file_in.get(file_in_i)).split(", ")[0])) break;
-					System.out.print("Move piece ");
-					System.out.println(((String) file_in.get(file_in_i)).split(", ")[1]);
-					
-					file_in_i++;
-				}
+				
 			}
 			file_in_i++;
 			
@@ -440,7 +462,6 @@ public class Board {
 				Queenmap.remove(inm);
 				Phonmap.remove(inm);
 				Knightmap.remove(inm);
-				System.out.println("moveq"+inm);
 				Phonmap.remove(in);
 				Phonmap.put(inm,selectOb);
 			}		
@@ -655,7 +676,7 @@ public class Board {
 	}
 	
 	Boolean isBlackSquare(int i,int j)	{
-		if((i+j)%2==0) return true;
-		else return false;
+		if((i+j)%2==0) return false;
+		else return true;
 	}
 }
